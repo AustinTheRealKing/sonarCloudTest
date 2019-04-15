@@ -12,6 +12,7 @@
 (defn mutate-genome
     "Produce a mutated genome by flipping each bit with mutation-rate probability."
     [genome mutation-rate]
+    ;; Austin King
     ;; Your code goes here
     nil)
          
@@ -65,6 +66,7 @@
     (:genome-size params) length vector of bits (0s and 1s)
     "
     [params]
+    ;; Austin King
     ;; Your code goes here
     nil)
           
@@ -75,6 +77,7 @@
     This is known truncation selection.
     "
     [population num-parents]
+    ;; Austin King
     ;; Your code goes here
     nil)
     
@@ -109,6 +112,7 @@
         (3) builds and returns the next generation by reproducing the parents.
     "
     [population params]
+    ;; Austin King
     ;; Your code goes here
     nil)
          
