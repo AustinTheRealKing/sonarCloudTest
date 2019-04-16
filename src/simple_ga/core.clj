@@ -23,10 +23,16 @@
     probability.
     
     See: https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Single-point_crossover
+    Take a random point in the smallest lenght genome
+    Concat them together using the sequence up until that pivot,
+    and drop the first part of the second one
     "
     [genome1 genome2]
     ;; Your code goes here
-    nil)
+    ;; Tyler Brabant
+    (let [pivot (rand-int (min (count genome1) (count genome2)))]
+      (concat (take pivot genome1) (drop pivot genome2)))
+  nil)
           
 (defn reproduce
     "Create the next generation from the given parents using the relevant params.
@@ -121,15 +127,15 @@
     [params]
     (loop [generations-remaining (:num-generations params)
            current-population (generate-population params)]
-           (if (zero? generations-remaining)
+          (if (zero? generations-remaining)
                ;; if no more generations, still need to evaluate the final population
                ;; in order to determine the best individual
-               (let [evaluated-population (evaluate-population current-population (:fitness-function params))]
-                    (apply max-key :fitness  evaluated-population))
+              (let [evaluated-population (evaluate-population current-population (:fitness-function params))]
+                   (apply max-key :fitness  evaluated-population))
                ;; otherwise move on to next generation
-               (do  (println "Generation" (+ 1 (- (:num-generations params) generations-remaining)))
-                    (recur (dec generations-remaining)
-                           (run-generation current-population params))))))
+              (do  (println "Generation" (+ 1 (- (:num-generations params) generations-remaining)))
+                   (recur (dec generations-remaining)
+                          (run-generation current-population params))))))
          
 
 (defn -main
@@ -148,8 +154,8 @@
                     :mutation-rate 0.1
                     :fitness-function (if (empty? args) 
                                         ff/max-ones ;; default to max-ones fitness function
-                                        (resolve (symbol "simple-ga.fitness-functions" (first args))))
-                   }]
+                                        (resolve (symbol "simple-ga.fitness-functions" (first args))))}]
+                   
        (if (:fitness-function params)
            ;; if fitness function is defined
            (println (evolve params))
