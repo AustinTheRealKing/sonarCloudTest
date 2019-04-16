@@ -73,8 +73,7 @@
     "
     [params]
     ;; Austin King
-    ;; Your code goes here
-    nil)
+    (repeatedly (:population-size params) #(generate-individual (:genome-size params))))
           
 
 (defn select-parents
