@@ -12,9 +12,9 @@
 (defn mutate-genome
     "Produce a mutated genome by flipping each bit with mutation-rate probability."
     [genome mutation-rate]
-    ;; Austin King
-    ;; Your code goes here
-    nil)
+    (if (= mutation-rate 1) 
+    (into [] (map (fn [bit] (utils/flip-bit bit)) genome))
+    (into [] genome)))
          
 (defn crossover
     "Perform single-point crossover on the two genomes.
