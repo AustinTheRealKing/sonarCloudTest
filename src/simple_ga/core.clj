@@ -13,8 +13,8 @@
     "Produce a mutated genome by flipping each bit with mutation-rate probability."
     [genome mutation-rate]
     (if (= mutation-rate 1) 
-    (into [] (map (fn [bit] (utils/flip-bit bit)) genome))
-    (into [] genome)))
+     (into [] (map (fn [bit] (utils/flip-bit bit)) genome))
+     (into [] genome)))
          
 (defn crossover
     "Perform single-point crossover on the two genomes.
@@ -31,8 +31,10 @@
     ;; Your code goes here
     ;; Tyler Brabant
     (let [pivot (rand-int (min (count genome1) (count genome2)))]
-      (concat (take pivot genome1) (drop pivot genome2)))
-  nil)
+      (if (utils/coin-toss?)
+        (concat (take pivot genome1) (drop pivot genome2))
+        (concat (take pivot genome2) (drop pivot genome1)))))
+
           
 (defn reproduce
     "Create the next generation from the given parents using the relevant params.
@@ -50,7 +52,7 @@
         at random and its genome is mutated with mutation rate (:mutation-rate params)
     "
     [parents params]
-    ;; Your code goes here
+    (let [new-generation ]) 
     nil)
               
 
@@ -102,8 +104,8 @@
     This should evaluate all individuals in parallel and set/update their fitness (even ones that already have a fitness value).
     "
     [population fitness-function]
-    ;; Your code goes here
-    nil)
+    (pmap #(evaluate-individual % fitness-function) population))
+
     
 
 (defn run-generation
