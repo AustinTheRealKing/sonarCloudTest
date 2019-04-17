@@ -82,9 +82,7 @@
     This is known truncation selection.
     "
     [population num-parents]
-    ;; Austin King
-    ;; Your code goes here
-    nil)
+    (take num-parents (sort-by :fitness > (set population))))
     
 (defn evaluate-individual
     "Evaluate a given individual on the specified fitness function.
