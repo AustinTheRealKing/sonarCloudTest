@@ -50,11 +50,20 @@
            otherwise
         with probability (- 1 (:crossover-rate params)) a single parent is chosen
         at random and its genome is mutated with mutation rate (:mutation-rate params)
-    "
-    [parents params]
-    (let [new-generation ]) 
-    nil)
-              
+  1 Create individuals population - parents 
+  2 list of maps
+  repeatly create new children with the parents
+  then add them
+  "
+  [parents params]
+  (let [new-generation (repeatedly (- (:population-size params) (:num-parents params)) 
+                         #(if (utils/coin-toss? (:crossover-rate params))
+                            (mutate-genome (crossover (rand-nth parents) (rand-nth parents)) (:mutation-rate params))
+                            (mutate-genome (rand-nth parents) (:mutation-rate params))))]
+    (concat parents new-generation)))
+  
+ 
+             
 
 (defn generate-individual
     "Generate a single individual.
@@ -104,7 +113,9 @@
     This should evaluate all individuals in parallel and set/update their fitness (even ones that already have a fitness value).
     "
     [population fitness-function]
-    (pmap #(evaluate-individual % fitness-function) population))
+    
+    (pmap (fn [population] (evaluate-individual population fitness-function)) population))
+
 
     
 
