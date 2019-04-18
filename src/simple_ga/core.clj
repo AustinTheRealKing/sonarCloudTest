@@ -12,9 +12,7 @@
 (defn mutate-genome
     "Produce a mutated genome by flipping each bit with mutation-rate probability."
     [genome mutation-rate]
-    (if (utils/coin-toss? mutation-rate) 
-     (into [] (map (fn [bit] (utils/flip-bit bit)) genome))
-     (into [] genome)))
+    (into [] (map (fn [bit] (if (utils/coin-toss? mutation-rate) (utils/flip-bit bit) bit)) genome)))
          
 (defn crossover
     "Perform single-point crossover on the two genomes.
@@ -93,7 +91,8 @@
     This is known truncation selection.
     "
     [population num-parents]
-    (take num-parents (sort-by :fitness > (set population))))
+  
+    (take num-parents (sort-by :fitness > population)))
     
 (defn evaluate-individual
     "Evaluate a given individual on the specified fitness function.
@@ -114,7 +113,7 @@
     "
     [population fitness-function]
     
-    (pmap (fn [population] (evaluate-individual population fitness-function)) population))
+    (pmap (fn [individual] (evaluate-individual individual fitness-function)) population))
 
 
     
