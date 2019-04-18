@@ -12,7 +12,7 @@
 (defn mutate-genome
     "Produce a mutated genome by flipping each bit with mutation-rate probability."
     [genome mutation-rate]
-    (if (= mutation-rate 1) 
+    (if (utils/coin-toss? mutation-rate) 
      (into [] (map (fn [bit] (utils/flip-bit bit)) genome))
      (into [] genome)))
          
@@ -117,9 +117,11 @@
         (3) builds and returns the next generation by reproducing the parents.
     "
     [population params]
-    ;; Austin King
-    ;; Your code goes here
-    nil)
+    (reproduce
+      (select-parents 
+        (evaluate-population population (:fitness-function params)) 
+        (:num-parents params))
+      params))
          
 (defn evolve
     "Run a genetic algorithm with the given params and return the best individual in the final generation."
