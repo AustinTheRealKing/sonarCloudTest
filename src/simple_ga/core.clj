@@ -54,10 +54,17 @@
   then add them
   "
   [parents params]
-  (let [new-generation (repeatedly (- (:population-size params) (:num-parents params)) 
+  
+  "(let [new-generation (repeatedly (- (:population-size params) (:num-parents params)) 
                          #(if (utils/coin-toss? (:crossover-rate params))
                             (mutate-genome (crossover (rand-nth parents) (rand-nth parents)) (:mutation-rate params))
                             (mutate-genome (rand-nth parents) (:mutation-rate params))))]
+    (concat parents new-generation))"
+  (let [new-genome (fn [individual-genome] (if (utils/coin-toss? (:crossover-rate params))
+                                             (mutate-genome (apply crossover (map #(get % :genome) (take 2 (shuffle parents)))) (:mutation-rate params))
+                                             (mutate-genome individual-genome (:mutation-rate params))))
+        new-individuals (into [] (repeatedly (- (:population-size params) (:num-parents params)) #(rand-nth parents)))
+        new-generation (map (fn [individual] (update individual :genome #(new-genome %))) new-individuals)]
     (concat parents new-generation)))
   
  
