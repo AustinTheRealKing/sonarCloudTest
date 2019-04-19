@@ -3,7 +3,8 @@
     lein run [-- fitness-function]
 
    Champlain College
-   CSI-380 Spring 2019"
+   CSI-380 Spring 2019
+    Austin King & Tyler Brabant"
   (:gen-class))
 
 (require '[simple-ga.utils :as utils])
@@ -11,6 +12,9 @@
 
 (defn mutate-genome
     "Produce a mutated genome by flipping each bit with mutation-rate probability."
+    "A coin toss is done with the specific mutation rate
+     If true it will flip the bit if not it won't
+     It is then mapped"
     [genome mutation-rate]
     (into [] (map (fn [bit] (if (utils/coin-toss? mutation-rate) (utils/flip-bit bit) bit)) genome)))
          
@@ -24,10 +28,11 @@
     Take a random point in the smallest lenght genome
     Concat them together using the sequence up until that pivot,
     and drop the first part of the second one
+    Pivot is the middle point that is randomly chosen from the smalles genome
+    There is then a coin toss that will determine what parts go on the left and right 
+    to make the new genome 
     "
     [genome1 genome2]
-    ;; Your code goes here
-    ;; Tyler Brabant
     (let [pivot (rand-int (min (count genome1) (count genome2)))]
       (if (utils/coin-toss?)
         (concat (take pivot genome1) (drop pivot genome2))
@@ -48,15 +53,16 @@
            otherwise
         with probability (- 1 (:crossover-rate params)) a single parent is chosen
         at random and its genome is mutated with mutation rate (:mutation-rate params)
-  1 Create individuals population - parents 
-  2 list of maps
-  repeatly create new children with the parents
-  then add them
+    
+    a new mutated genome is created and based on the crossover rate it is either single or
+    stems from both parents
+    a population is then created of these new individuals which is combined with the parents to
+    finialize the newly reproduced generation
   "
   [parents params]
   (let [genome (fn [individual-genome] (if (utils/coin-toss? (:crossover-rate params))
                                          (mutate-genome (apply crossover (map (fn [genome] (get genome :genome))
-                                                                           (take 2 (shuffle parents))))
+                                                                           (drop 3 (shuffle parents))))
                                            (:mutation-rate params))
                                          (mutate-genome individual-genome (:mutation-rate params))))
         population (map (fn [individual] (update individual :genome #(genome %)))
@@ -83,6 +89,8 @@
     The population is a collection of (:population-size params) individuals,
     where each individual is a map with key :genome associated with a
     (:genome-size params) length vector of bits (0s and 1s)
+    Repeatedly is used to do a function a specific amount of times which
+    in this case population-size
     "
     [params]
     ;; Austin King
@@ -93,6 +101,8 @@
     "Select and return the num-parents most fit individuals in the population.
     
     This is known truncation selection.
+    The parents are sorted by the highest fitness
+    then the specified number of parents are taken
     "
     [population num-parents]
   
@@ -104,6 +114,7 @@
     Returns a copy of the individual with :fitness key set to its fitness.
     
     This should evaluate the individual and set/update its fitness even if it already has a fitness value.
+    
     "
     [individual fitness-function]
     (assoc individual :fitness (fitness-function (:genome individual))))
@@ -114,6 +125,7 @@
     Returns a copy of the population with the :fitness key of each individual set to its fitness.
     
     This should evaluate all individuals in parallel and set/update their fitness (even ones that already have a fitness value).
+    Pmap is used for concurrency to run the individual evaluates at the same time 
     "
     [population fitness-function]
     
