@@ -11,10 +11,12 @@
 (require '[simple-ga.fitness-functions :as ff])
 
 (defn mutate-genome
-    "Produce a mutated genome by flipping each bit with mutation-rate probability."
-    "A coin toss is done with the specific mutation rate
+    "Produce a mutated genome by flipping each bit with mutation-rate probability.
+      A coin toss is done with the specific mutation rate
      If true it will flip the bit if not it won't
-     It is then mapped"
+     It is then mapped
+    "
+  
     [genome mutation-rate]
     (into [] (map (fn [bit] (if (utils/coin-toss? mutation-rate) (utils/flip-bit bit) bit)) genome)))
          
